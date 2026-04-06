@@ -85,9 +85,11 @@ A structured, hands-on roadmap covering the full spectrum of modern AI Engineeri
 ### 🎥 YouTube
 > Updated progressively as each phase is studied.
 
-| Title | Channel | Phase |
-| :--- | :--- | :---: |
-| Intro to Large Language Models | Andrej Karpathy | Phase 1 |
+| Title | Channel | Phase | Link |
+| :--- | :--- | :---: | :--- |
+| Intro to Large Language Models | Andrej Karpathy | Phase 1 | [Watch](https://www.youtube.com/watch?v=zjkBMFhNj_g) |
+| Let's build the GPT Tokenizer | Andrej Karpathy | Phase 1 | [Watch](https://www.youtube.com/watch?v=zduSFxRajkE) |
+| What is a Context Window? | IBM Technology | Phase 1 | [Watch](https://www.youtube.com/watch?v=-QVoIxEpFkM) |
 
 ### 📄 Research Papers
 
