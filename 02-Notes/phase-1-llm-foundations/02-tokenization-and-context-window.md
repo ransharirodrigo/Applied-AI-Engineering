@@ -5,6 +5,8 @@
 * **Model Specificity:** Every model uses a unique "dictionary" (tokenizer). This is why the same sentence will result in different token counts depending on which model we use.
 * **Root of Error:** When a model fails at simple tasks—like spelling, reversing a string, or understanding a specific programming language (e.g., Python indentation)—it is often because the tokenizer broke the text into illogical chunks that the model couldn't reassemble correctly.
 
+**🎥 Learning Resource:** [Let's build the GPT Tokenizer - Andrej Karpathy](https://www.youtube.com/watch?v=zduSFxRajkE)
+
 ## 🧠 Context Window (The Memory)
 * **Definition:** This is the maximum amount of information the model can "hold in its head" at any single time.
 * **What occupies the Window?** Everything in the current session consumes tokens:
@@ -18,3 +20,5 @@ As context windows grow (e.g., from 8k to 1M+ tokens), three main challenges ari
 1. **Compute (Cost):** Processing more tokens requires significantly more memory (VRAM) and hardware power.
 2. **Performance:** Models can suffer from the "Lost in the Middle" effect, where they become less accurate at retrieving details buried in the center of a massive prompt.
 3. **Safety:** Larger windows make it easier for "prompt injection" attacks or complex instructions that might bypass safety filters.
+
+**🎥 Learning Resource:** [What is a Context Window? - IBM Technology](https://www.youtube.com/watch?v=-QVoIxEpFkM)
