@@ -22,3 +22,35 @@ A professional prompt is rarely a single sentence. It is a structured object con
 
 
 **🌐 Learning Resource:** [OpenAI Guide](https://platform.openai.com/docs/guides/prompt-engineering), [PromptingGuide.ai](https://www.promptingguide.ai/)
+
+---
+
+## 🟢 Zero-Shot Prompting
+
+Zero-shot prompting involves interacting with a model without providing any examples or demonstrations. The model relies entirely on its **pre-trained knowledge** and **instruction tuning**.
+
+### 🔬 Theoretical Foundation
+The effectiveness of zero-shot prompting is largely attributed to **Instruction Tuning**. Research by **Wei et al. (2022)** demonstrated that fine-tuning large language models on a collection of datasets described via instructions substantially improves their performance on completely unseen tasks.
+
+* **Core Paper:** [Finetuned Language Models are Zero-Shot Learners (FLAN)](https://arxiv.org/pdf/2109.01652) — *ICLR 2022*
+
+### ⚖️ Advantages & Limitations
+
+| Feature | Description |
+| :--- | :--- |
+| **Simplicity** | Easy to construct and experiment with without deep engineering knowledge. |
+| **Data Efficiency** | Requires no additional data, making it ideal when examples are scarce. |
+| **Flexibility** | Low effort to update or adapt as requirements change. |
+| **❌ Variability** | Performance fluctuates based on task complexity; struggles with niche domain logic. |
+| **❌ Dependency** | Entirely dependent on the quality and breadth of the model's pre-training. |
+
+### 🛠️ Common Applications
+* **Text Classification:** Categorizing sentiment or topics (e.g., "Technical" vs "Non-Technical").
+* **Information Extraction:** Pulling specific entities (dates, names) from raw text.
+* **Question Answering:** Leveraging the model's internal "encyclopedic" knowledge.
+* **Summarization:** Condensing long documents without needing a "gold standard" example.
+
+---
+**🌐 Learning Resources:**
+* [PromptingGuide.ai - Zero-Shot](https://www.promptingguide.ai/techniques/zeroshot)
+* [IBM Think - What is Zero-Shot?](https://www.ibm.com/think/topics/zero-shot-prompting)
