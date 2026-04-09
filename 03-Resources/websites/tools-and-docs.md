@@ -12,3 +12,5 @@
 * **[PromptingGuide.ai](https://www.promptingguide.ai/):** A comprehensive guide covering everything from basic Zero-shot to advanced reasoning patterns.
 * **[OpenAI Prompt Engineering Guide](https://platform.openai.com/docs/guides/prompt-engineering):** Official strategies and best practices for optimizing model performance.
 * **[Anthropic Prompt Engineering Tutorial](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview):** Hands-on lessons focused on structured prompt design and XML tagging.
+* **[PromptingGuide.ai - Zero-Shot](https://www.promptingguide.ai/techniques/zeroshot):** Technical deep-dive into zero-shot patterns and use cases.
+* **[IBM Think - What is Zero-Shot?](https://www.ibm.com/think/topics/zero-shot-prompting):** Explains the machine learning principles behind zero-shot generalization.
