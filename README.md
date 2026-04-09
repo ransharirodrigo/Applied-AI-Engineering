@@ -96,6 +96,7 @@ A structured, hands-on roadmap covering the full spectrum of modern AI Engineeri
 | Paper | Authors | Topic |
 | :--- | :--- | :--- |
 | [Attention Is All You Need](https://arxiv.org/abs/1706.03762) | Vaswani et al. | Transformers |
+| [Finetuned Language Models are Zero-Shot Learners](https://arxiv.org/abs/2109.01652) | Wei et al. | Instruction Tuning & FLAN |
 
 ### 🌐 Key Websites & Tools
 
