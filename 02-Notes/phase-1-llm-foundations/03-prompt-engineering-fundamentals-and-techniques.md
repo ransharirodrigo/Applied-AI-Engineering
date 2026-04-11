@@ -83,3 +83,25 @@ The single example acts as a **"demonstration"** that steers the model’s laten
 **🌐 Learning Resources:**
 * [PromptingGuide.ai - Few-Shot (One-Shot Section)](https://www.promptingguide.ai/techniques/fewshot)
 * [Microsoft: One-shot learning with LLMs](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/prompt-engineering#few-shot-learning)
+
+---
+
+## 🟣 Few-Shot Prompting
+
+Few-shot prompting involves providing the model with a **small set of examples** (typically 2 to 5) to demonstrate a complex task or consistent pattern. It is the most robust form of **In-Context Learning (ICL)**.
+
+* **Core Paper:** [Language Models are Few-Shot Learners](https://arxiv.org/abs/2005.14165) — *NeurIPS 2020*
+
+### ⚖️ Advantages & Limitations
+
+| Feature | Description |
+| :--- | :--- |
+| **High Reliability** | Drastically reduces "hallucinations" in formatting and logic compared to zero or one-shot. |
+| **Complex Logic** | Enables the model to handle multi-step reasoning by showing multiple successful paths. |
+| **Pattern Mastery** | Ideal for tasks with high variance or many "edge cases" that a single example cannot cover. |
+| **❌ Token Cost** | Each example consumes tokens, increasing the cost and latency of every API call. |
+| **❌ Context Limits** | Large examples can quickly fill up the context window. |
+
+---
+**🌐 Learning Resources:**
+* [PromptingGuide.ai - Few-Shot Prompting](https://www.promptingguide.ai/techniques/fewshot)
