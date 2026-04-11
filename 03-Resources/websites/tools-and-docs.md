@@ -14,3 +14,5 @@
 * **[Anthropic Prompt Engineering Tutorial](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview):** Hands-on lessons focused on structured prompt design and XML tagging.
 * **[PromptingGuide.ai - Zero-Shot](https://www.promptingguide.ai/techniques/zeroshot):** Technical deep-dive into zero-shot patterns and use cases.
 * **[IBM Think - What is Zero-Shot?](https://www.ibm.com/think/topics/zero-shot-prompting):** Explains the machine learning principles behind zero-shot generalization.
+* **[PromptingGuide.ai - Few-Shot (One-Shot Section)](https://www.promptingguide.ai/techniques/fewshot):** Technical documentation on providing a single demonstration to steer model behavior.
+* **[Microsoft: One-shot learning with LLMs](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/prompt-engineering#few-shot-learning):** Practical guide on using a single example to calibrate model output and tone.
