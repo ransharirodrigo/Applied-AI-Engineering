@@ -54,3 +54,32 @@ The effectiveness of zero-shot prompting is largely attributed to **Instruction 
 **🌐 Learning Resources:**
 * [PromptingGuide.ai - Zero-Shot](https://www.promptingguide.ai/techniques/zeroshot)
 * [IBM Think - What is Zero-Shot?](https://www.ibm.com/think/topics/zero-shot-prompting)
+
+---
+
+## 🔵 One-Shot Prompting
+
+One-shot prompting involves providing the model with **exactly one example** (a single input-output pair) to demonstrate the desired pattern, style, or logic before asking it to perform the task.
+
+The single example acts as a **"demonstration"** that steers the model’s latent representations toward the specific task manifold.
+
+* **Core Paper:** [Language Models are Few-Shot Learners](https://arxiv.org/abs/2005.14165) — *NeurIPS 2020*
+
+### ⚖️ Why Use One-Shot?
+
+| Benefit | Description |
+| :--- | :--- |
+| **Format Calibration** | Best for teaching the model a strictly non-standard output format (e.g., custom JSON or a specific coding style). |
+| **Tone Alignment** | Effectively communicates "Voice" or "Persona" that instructions alone can't describe. |
+| **Edge Case Handling** | Shows the model how to handle a specific nuance or ambiguity it might fail at in zero-shot. |
+| **Performance Gain** | Provides a significant accuracy boost over zero-shot for reasoning-heavy tasks. |
+
+### 🛠️ Strategic Applications
+* **Complex Data Extraction:** When you need a specific, nested structure that instructions struggle to define.
+* **Content Transformation:** Translating text into a specific "Corporate Voice" or a niche technical dialect.
+* **Consistent Logic:** Showing the model one "Chain of Thought" example to follow for subsequent problems.
+
+---
+**🌐 Learning Resources:**
+* [PromptingGuide.ai - Few-Shot (One-Shot Section)](https://www.promptingguide.ai/techniques/fewshot)
+* [Microsoft: One-shot learning with LLMs](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/prompt-engineering#few-shot-learning)
