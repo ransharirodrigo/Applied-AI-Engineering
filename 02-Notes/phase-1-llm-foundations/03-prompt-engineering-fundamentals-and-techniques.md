@@ -105,3 +105,19 @@ Few-shot prompting involves providing the model with a **small set of examples**
 ---
 **🌐 Learning Resources:**
 * [PromptingGuide.ai - Few-Shot Prompting](https://www.promptingguide.ai/techniques/fewshot)
+
+---
+
+## 🧠 Chain-of-Thought Prompting
+Chain-of-Thought prompting enhances an LLM's reasoning by asking it to break its answer into a sequence of intermediate steps. This makes the model explain how it arrived at the final answer instead of only producing the result.
+
+* **What it does:** Encourages the model to show its working, such as reasoning through a math problem or outlining the logic behind a conclusion.
+* **Why it helps:** Improves transparency, reduces reasoning errors, and makes it easier to validate the model's process.
+* **Typical use cases:** math word problems, multi-step logic, planning, debugging, and step-by-step explanation tasks.
+
+---
+
+**🌐 Learning Resource:** 
+* [Chain-of-Thought Prompting Guide](https://www.prompthub.us/blog/chain-of-thought-prompting-guide)
+
+---
