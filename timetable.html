@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Engineering Syllabus Tracker</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+  /* ── DARK theme (default) ── */
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161d;
+    --surface-2: #1a1e28;
+    --border: #252a38;
+    --accent: #5b8dee;
+    --green: #3ecf8e;
+    --green-dim: #1a3d2e;
+    --green-border: #1e4a37;
+    --text-primary: #e8eaf0;
+    --text-secondary: #8890a4;
+    --text-muted: #555d72;
+    --notes-bg: #13161d;
+    --notes-border: #252a38;
+    --notes-text: #e8eaf0;
+    --notes-placeholder: #555d72;
+    --tag-bg: #1a1e28;
+    --tag-border: #252a38;
+    --tag-text: #8890a4;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', sans-serif;
+  }
+
+  /* ── LIGHT theme ── */
+  [data-theme="light"] {
+    --bg: #f5f6fa;
+    --surface: #ffffff;
+    --surface-2: #eef0f6;
+    --border: #dde0ea;
+    --accent: #3b6fd4;
+    --green: #1a9e68;
+    --green-dim: #e6f7f0;
+    --green-border: #b2e4d0;
+    --text-primary: #1a1d2e;
+    --text-secondary: #5a6077;
+    --text-muted: #9098b0;
+    --notes-bg: #ffffff;
+    --notes-border: #dde0ea;
+    --notes-text: #1a1d2e;
+    --notes-placeholder: #aab0c4;
+    --tag-bg: #eef0f6;
+    --tag-border: #dde0ea;
+    --tag-text: #5a6077;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--sans);
+    min-height: 100vh;
+    padding: 0 0 80px 0;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  /* ── Header ── */
+  header {
+    padding: 40px 40px 28px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .header-left h1 {
+    font-family: var(--mono);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+  }
+
+  .header-left h1 span { color: var(--accent); }
+
+  .header-left p {
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  /* ── Theme toggle ── */
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: var(--surface);
+    color: var(--text-secondary);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.6px;
+    transition: all 0.15s;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .theme-icon { font-size: 14px; }
+
+  /* ── Global progress ── */
+  .global-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+
+  .global-pct {
+    font-family: var(--mono);
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .global-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+  }
+
+  .global-bar-wrap {
+    width: 180px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .global-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--green));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  /* ── Container ── */
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ── Stats ── */
+  .stats-bar {
+    display: flex;
+    gap: 24px;
+    padding: 24px 0 8px;
+    flex-wrap: wrap;
+  }
+
+  .stat { display: flex; flex-direction: column; gap: 4px; }
+  .stat-val { font-family: var(--mono); font-size: 20px; font-weight: 700; color: var(--text-primary); }
+  .stat-key { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+  /* ── Phase ── */
+  .phase { margin-top: 40px; }
+
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 0 14px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 6px;
+  }
+
+  .phase-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  .phase-title {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-primary);
+  }
+
+  .phase-goal { font-size: 12px; color: var(--text-muted); font-style: italic; margin-top: 2px; }
+
+  .phase-meta {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .phase-count { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
+  .phase-bar-wrap { width: 80px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .phase-bar-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
+
+  /* ── Section ── */
+  .section-label {
+    padding: 10px 16px 6px;
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--text-muted);
+    letter-spacing: 0.8px;
+  }
+
+  /* ── Topic row ── */
+  .topic {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 11px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+    border: 1px solid transparent;
+    margin-bottom: 2px;
+  }
+
+  .topic:hover { background: var(--surface); border-color: var(--border); }
+
+  .topic.done { background: var(--green-dim); border-color: var(--green-border); }
+  .topic.done .topic-name { color: var(--text-secondary); text-decoration: line-through; text-decoration-color: var(--text-muted); }
+  .topic.done .check-box { background: var(--green); border-color: var(--green); }
+  .topic.done .check-box svg { display: block; }
+
+  .check-box {
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .check-box svg { display: none; width: 11px; height: 11px; }
+
+  .topic-name { font-size: 13.5px; color: var(--text-primary); flex: 1; line-height: 1.4; transition: color 0.15s; }
+
+  .topic-date {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    min-width: 80px;
+    text-align: right;
+  }
+
+  .topic.done .topic-date { color: var(--green); }
+
+  /* ══════════════════════════════════════════
+     NOTES AREA
+  ══════════════════════════════════════════ */
+  .notes-section {
+    margin-top: 52px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+
+  .notes-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .notes-title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .notes-icon {
+    width: 28px; height: 28px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .notes-heading {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-primary);
+  }
+
+  .notes-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .notes-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .notes-saved-indicator {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--green);
+    opacity: 0;
+    transition: opacity 0.3s;
+    letter-spacing: 0.5px;
+  }
+
+  .notes-saved-indicator.show { opacity: 1; }
+
+  .btn-clear-notes {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 5px 12px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.6px;
+    transition: all 0.15s;
+  }
+
+  .btn-clear-notes:hover { border-color: #e5534b; color: #e5534b; }
+
+  /* tabs */
+  .notes-tabs {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 3px;
+    width: fit-content;
+  }
+
+  .notes-tab {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 5px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+    border: none;
+    background: transparent;
+  }
+
+  .notes-tab.active {
+    background: var(--surface);
+    color: var(--text-primary);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+
+  /* textarea */
+  .notes-textarea {
+    width: 100%;
+    min-height: 200px;
+    padding: 16px;
+    background: var(--notes-bg);
+    border: 1px solid var(--notes-border);
+    border-radius: 8px;
+    color: var(--notes-text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.15s, background 0.2s;
+  }
+
+  .notes-textarea:focus { border-color: var(--accent); }
+  .notes-textarea::placeholder { color: var(--notes-placeholder); }
+
+  /* pinned notes list */
+  .pinned-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .pinned-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+  }
+
+  .pinned-bullet {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+
+  .pinned-text { font-size: 13.5px; color: var(--text-primary); line-height: 1.5; flex: 1; }
+  .pinned-date { font-family: var(--mono); font-size: 10px; color: var(--text-muted); white-space: nowrap; }
+
+  .pinned-del {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    padding: 0 2px;
+    transition: color 0.15s;
+    flex-shrink: 0;
+  }
+
+  .pinned-del:hover { color: #e5534b; }
+
+  .pinned-add-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .pinned-input {
+    flex: 1;
+    padding: 9px 12px;
+    background: var(--notes-bg);
+    border: 1px solid var(--notes-border);
+    border-radius: 6px;
+    color: var(--notes-text);
+    font-family: var(--sans);
+    font-size: 13.5px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .pinned-input:focus { border-color: var(--accent); }
+  .pinned-input::placeholder { color: var(--notes-placeholder); }
+
+  .btn-add-pin {
+    padding: 9px 16px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+  }
+
+  .btn-add-pin:hover { opacity: 0.85; }
+
+  .empty-pins {
+    text-align: center;
+    padding: 28px;
+    color: var(--text-muted);
+    font-size: 13px;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+  }
+
+  /* ── Reset button ── */
+  .reset-btn { margin-top: 40px; display: flex; justify-content: center; }
+
+  button.reset {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.8px;
+    transition: all 0.15s;
+  }
+
+  button.reset:hover { border-color: #e5534b; color: #e5534b; }
+
+  @media (max-width: 600px) {
+    header { padding: 24px 16px 20px; }
+    .container { padding: 0 16px; }
+    .global-bar-wrap { width: 120px; }
+    .global-pct { font-size: 24px; }
+    .phase-meta { display: none; }
+    .header-right { gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>Applied <span>AI Engineering</span> — Syllabus Tracker</h1>
+    <p>Click any topic to mark it complete. Progress is saved in your browser.</p>
+  </div>
+  <div class="header-right">
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode">
+      <span class="theme-icon" id="themeIcon">☀️</span>
+      <span id="themeLabel">LIGHT</span>
+    </button>
+    <div class="global-progress">
+      <div class="global-pct" id="globalPct">0%</div>
+      <div class="global-label">overall progress</div>
+      <div class="global-bar-wrap">
+        <div class="global-bar-fill" id="globalBar" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-val" id="statDone">0</div><div class="stat-key">Completed</div></div>
+    <div class="stat"><div class="stat-val" id="statLeft">0</div><div class="stat-key">Remaining</div></div>
+    <div class="stat"><div class="stat-val" id="statTotal">0</div><div class="stat-key">Total Topics</div></div>
+  </div>
+
+  <!-- PHASE 1 -->
+  <div class="phase" data-phase="1">
+    <div class="phase-header">
+      <div class="phase-dot" style="background:#7c6af5"></div>
+      <div>
+        <div class="phase-title">Phase 1 — LLM Foundations &amp; Prompt Engineering</div>
+        <div class="phase-goal">Understand how LLMs work at a mechanical level and master core prompting techniques.</div>
+      </div>
+      <div class="phase-meta">
+        <div class="phase-count" id="ph1-count">0 / 0</div>
+        <div class="phase-bar-wrap"><div class="phase-bar-fill" id="ph1-bar" style="background:#7c6af5;width:0%"></div></div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-label">1.1 — LLM Mechanics</div>
+      <div class="topic" data-id="1-1-1"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">How Large Language Models work</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="1-1-2"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Tokenization and vocabulary</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="1-1-3"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Context windows and token limits</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="1-1-4"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Next-token prediction and temperature</div><div class="topic-date"></div></div>
+    </div>
+    <div class="section">
+      <div class="section-label">1.2 — Prompting Techniques</div>
+      <div class="topic" data-id="1-2-1"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Zero-shot prompting</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="1-2-2"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">One-shot and Few-shot prompting</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="1-2-3"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Chain-of-Thought (CoT) prompting</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="1-2-4"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">System messages and roles</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="1-2-5"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">ReAct pattern (Reason + Act)</div><div class="topic-date"></div></div>
+    </div>
+    <div class="section">
+      <div class="section-label">1.3 — Prompt Evaluation &amp; Tooling</div>
+      <div class="topic" data-id="1-3-1"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">BLEU and ROUGE scoring</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="1-3-2"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">OpenAI Tokenizer</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="1-3-3"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">OpenAI Cookbook</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="1-3-4"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">AI coding assistants (Cursor, Copilot)</div><div class="topic-date"></div></div>
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase" data-phase="2">
+    <div class="phase-header">
+      <div class="phase-dot" style="background:#5b8dee"></div>
+      <div>
+        <div class="phase-title">Phase 2 — Python &amp; Mathematics for AI</div>
+        <div class="phase-goal">Build the foundational Python and mathematical skills required for AI/ML engineering.</div>
+      </div>
+      <div class="phase-meta">
+        <div class="phase-count" id="ph2-count">0 / 0</div>
+        <div class="phase-bar-wrap"><div class="phase-bar-fill" id="ph2-bar" style="background:#5b8dee;width:0%"></div></div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-label">2.1 — Python for Data</div>
+      <div class="topic" data-id="2-1-1"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">NumPy essentials (arrays, operations, broadcasting)</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="2-1-2"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Pandas essentials (DataFrames, filtering, aggregation)</div><div class="topic-date"></div></div>
+    </div>
+    <div class="section">
+      <div class="section-label">2.2 — Mathematics for AI</div>
+      <div class="topic" data-id="2-2-1"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Linear Algebra: vectors, matrices, dot products, transformations</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="2-2-2"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Probability: distributions, Bayes' theorem, likelihood</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="2-2-3"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Statistics: mean, variance, standard deviation, correlation</div><div class="topic-date"></div></div>
+    </div>
+    <div class="section">
+      <div class="section-label">2.3 — Classical Machine Learning</div>
+      <div class="topic" data-id="2-3-1"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Linear Regression: theory and implementation</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="2-3-2"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Classification algorithms: KNN and Decision Trees</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="2-3-3"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">SVM and Ensemble Methods</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="2-3-4"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Model Selection and Hyperparameter Tuning</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="2-3-5"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Scikit-learn practice</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="2-3-6"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">API Integration with Flask / FastAPI</div><div class="topic-date"></div></div>
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="phase" data-phase="3">
+    <div class="phase-header">
+      <div class="phase-dot" style="background:#3ecf8e"></div>
+      <div>
+        <div class="phase-title">Phase 3 — Deep Learning &amp; NLP</div>
+        <div class="phase-goal">Understand neural networks, NLP pipelines, the Transformer architecture, and fine-tuning approaches.</div>
+      </div>
+      <div class="phase-meta">
+        <div class="phase-count" id="ph3-count">0 / 0</div>
+        <div class="phase-bar-wrap"><div class="phase-bar-fill" id="ph3-bar" style="background:#3ecf8e;width:0%"></div></div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-label">3.1 — Neural Networks</div>
+      <div class="topic" data-id="3-1-1"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Neural network architecture and layers</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="3-1-2"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Activation functions (ReLU, Sigmoid, Softmax)</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="3-1-3"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Backpropagation</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="3-1-4"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Loss functions</div><div class="topic-date"></div></div>
+    </div>
+    <div class="section">
+      <div class="section-label">3.2 — Natural Language Processing</div>
+      <div class="topic" data-id="3-2-1"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Text preprocessing pipelines</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="3-2-2"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Word Embeddings: Word2Vec and GloVe</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="3-2-3"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Sentiment Analysis</div><div class="topic-date"></div></div>
+    </div>
+    <div class="section">
+      <div class="section-label">3.3 — Transformers</div>
+      <div class="topic" data-id="3-3-1"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">The Attention Mechanism explained</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="3-3-2"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Self-attention and multi-head attention</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="3-3-3"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">The Transformer architecture (Encoder / Decoder)</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="3-3-4"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">How GPT-style models work</div><div class="topic-date"></div></div>
+    </div>
+    <div class="section">
+      <div class="section-label">3.4 — Fine-tuning</div>
+      <div class="topic" data-id="3-4-1"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Transfer learning concepts</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="3-4-2"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">LoRA (Low-Rank Adaptation)</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="3-4-3"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">PEFT (Parameter-Efficient Fine-Tuning)</div><div class="topic-date"></div></div>
+    </div>
+    <div class="section">
+      <div class="section-label">3.5 — Model Evaluation</div>
+      <div class="topic" data-id="3-5-1"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Accuracy, Precision, and Recall</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="3-5-2"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">F1 Score</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="3-5-3"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Evaluation in LLM contexts</div><div class="topic-date"></div></div>
+    </div>
+  </div>
+
+  <!-- PHASE 4 -->
+  <div class="phase" data-phase="4">
+    <div class="phase-header">
+      <div class="phase-dot" style="background:#f6a623"></div>
+      <div>
+        <div class="phase-title">Phase 4 — Advanced AI Orchestration</div>
+        <div class="phase-goal">Build production-ready AI systems using RAG, LangChain, and autonomous agent architectures.</div>
+      </div>
+      <div class="phase-meta">
+        <div class="phase-count" id="ph4-count">0 / 0</div>
+        <div class="phase-bar-wrap"><div class="phase-bar-fill" id="ph4-bar" style="background:#f6a623;width:0%"></div></div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-label">4.1 — RAG — Retrieval Augmented Generation</div>
+      <div class="topic" data-id="4-1-1"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">What is RAG and why it matters</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="4-1-2"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">RAG architecture: retriever + generator</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="4-1-3"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Chunking and embedding strategies</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="4-1-4"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Building a simple document chatter</div><div class="topic-date"></div></div>
+    </div>
+    <div class="section">
+      <div class="section-label">4.2 — Vector Databases</div>
+      <div class="topic" data-id="4-2-1"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">What are vector embeddings</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="4-2-2"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Pinecone: setup and usage</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="4-2-3"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">ChromaDB: local vector store</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="4-2-4"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Similarity search (cosine, dot product)</div><div class="topic-date"></div></div>
+    </div>
+    <div class="section">
+      <div class="section-label">4.3 — LangChain &amp; LangGraph</div>
+      <div class="topic" data-id="4-3-1"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">LangChain core concepts: chains, prompts, memory</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="4-3-2"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">LangGraph for stateful workflows</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="4-3-3"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Connecting LLMs to external data sources</div><div class="topic-date"></div></div>
+    </div>
+    <div class="section">
+      <div class="section-label">4.4 — AI Agents</div>
+      <div class="topic" data-id="4-4-1"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">What are AI Agents</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="4-4-2"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Function calling and tool use</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="4-4-3"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Building autonomous workflows</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="4-4-4"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">ReAct-based agent loops</div><div class="topic-date"></div></div>
+    </div>
+    <div class="section">
+      <div class="section-label">4.5 — Multi-Agent Systems</div>
+      <div class="topic" data-id="4-5-1"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">CrewAI fundamentals</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="4-5-2"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Roles, tasks, and agent collaboration</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="4-5-3"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Multi-agent orchestration patterns</div><div class="topic-date"></div></div>
+    </div>
+    <div class="section">
+      <div class="section-label">4.6 — Production Considerations</div>
+      <div class="topic" data-id="4-6-1"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Advanced system messages</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="4-6-2"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">AI Ethics and Safety</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="4-6-3"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Prompt injection and guardrails</div><div class="topic-date"></div></div>
+      <div class="topic" data-id="4-6-4"><div class="check-box"><svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topic-name">Coding with AI: Cursor and Copilot best practices</div><div class="topic-date"></div></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       NOTES AREA
+  ══════════════════════════════════════════ -->
+  <div class="notes-section">
+    <div class="notes-header">
+      <div class="notes-title-row">
+        <div class="notes-icon">📝</div>
+        <div>
+          <div class="notes-heading">Notes &amp; Bookmarks</div>
+          <div class="notes-sub">Saved in your browser alongside your progress</div>
+        </div>
+      </div>
+      <div class="notes-actions">
+        <span class="notes-saved-indicator" id="savedIndicator">✓ saved</span>
+        <button class="btn-clear-notes" onclick="clearCurrentTab()">Clear</button>
+      </div>
+    </div>
+
+    <div class="notes-tabs">
+      <button class="notes-tab active" data-tab="freeform" onclick="switchTab('freeform', this)">Free Notes</button>
+      <button class="notes-tab" data-tab="pinned" onclick="switchTab('pinned', this)">Pinned Items</button>
+    </div>
+
+    <!-- Free notes tab -->
+    <div id="tab-freeform">
+      <textarea
+        class="notes-textarea"
+        id="notesTextarea"
+        placeholder="Write anything here — links to resources, questions to revisit, key insights, things to look up later…"
+        oninput="saveNotes()"
+      ></textarea>
+    </div>
+
+    <!-- Pinned items tab -->
+    <div id="tab-pinned" style="display:none">
+      <div class="pinned-list" id="pinnedList"></div>
+      <div class="pinned-add-row">
+        <input
+          class="pinned-input"
+          id="pinnedInput"
+          type="text"
+          placeholder="Add a pinned note, link, or reminder…"
+          onkeydown="if(event.key==='Enter') addPin()"
+        />
+        <button class="btn-add-pin" onclick="addPin()">+ Pin</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="reset-btn">
+    <button class="reset" onclick="resetAll()">Reset all progress</button>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// STORAGE KEYS
+// ═══════════════════════════════════════════
+const STORE_KEY   = 'ai_syllabus_v1';
+const NOTES_KEY   = 'ai_syllabus_notes_v1';
+const PINNED_KEY  = 'ai_syllabus_pins_v1';
+const THEME_KEY   = 'ai_syllabus_theme_v1';
+
+// ═══════════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════════
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const isDark = theme === 'dark';
+  document.getElementById('themeIcon').textContent  = isDark ? '☀️' : '🌙';
+  document.getElementById('themeLabel').textContent = isDark ? 'LIGHT' : 'DARK';
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  localStorage.setItem(THEME_KEY, next);
+  applyTheme(next);
+}
+
+// ═══════════════════════════════════════════
+// PROGRESS TRACKING
+// ═══════════════════════════════════════════
+const phaseMap = { 1:[], 2:[], 3:[], 4:[] };
+
+document.querySelectorAll('.topic').forEach(el => {
+  const id = el.dataset.id;
+  const phase = parseInt(id.split('-')[0]);
+  phaseMap[phase].push(id);
+});
+
+function load() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; }
+  catch { return {}; }
+}
+
+function save(data) { localStorage.setItem(STORE_KEY, JSON.stringify(data)); }
+
+function fmtDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'2-digit' });
+}
+
+function updateStats(data) {
+  const all = document.querySelectorAll('.topic');
+  const total = all.length;
+  let done = 0;
+
+  all.forEach(el => {
+    const id = el.dataset.id;
+    const dateEl = el.querySelector('.topic-date');
+    if (data[id]) {
+      el.classList.add('done');
+      dateEl.textContent = fmtDate(data[id]);
+      done++;
+    } else {
+      el.classList.remove('done');
+      dateEl.textContent = '';
+    }
+  });
+
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  document.getElementById('globalPct').textContent = pct + '%';
+  document.getElementById('globalBar').style.width = pct + '%';
+  document.getElementById('statDone').textContent = done;
+  document.getElementById('statLeft').textContent = total - done;
+  document.getElementById('statTotal').textContent = total;
+
+  [1,2,3,4].forEach(p => {
+    const ids = phaseMap[p];
+    const pDone = ids.filter(id => !!data[id]).length;
+    const pTotal = ids.length;
+    const pp = pTotal ? Math.round((pDone / pTotal) * 100) : 0;
+    document.getElementById(`ph${p}-count`).textContent = `${pDone} / ${pTotal}`;
+    document.getElementById(`ph${p}-bar`).style.width = pp + '%';
+  });
+}
+
+document.querySelectorAll('.topic').forEach(el => {
+  el.addEventListener('click', () => {
+    const id = el.dataset.id;
+    const data = load();
+    if (data[id]) { delete data[id]; } else { data[id] = new Date().toISOString(); }
+    save(data);
+    updateStats(data);
+  });
+});
+
+function resetAll() {
+  if (!confirm('Reset all progress? This cannot be undone.')) return;
+  save({});
+  updateStats({});
+}
+
+// ═══════════════════════════════════════════
+// NOTES — FREE FORM
+// ═══════════════════════════════════════════
+let saveTimer;
+
+function saveNotes() {
+  localStorage.setItem(NOTES_KEY, document.getElementById('notesTextarea').value);
+  clearTimeout(saveTimer);
+  const ind = document.getElementById('savedIndicator');
+  ind.classList.remove('show');
+  saveTimer = setTimeout(() => { ind.classList.add('show'); }, 600);
+}
+
+function loadNotes() {
+  document.getElementById('notesTextarea').value = localStorage.getItem(NOTES_KEY) || '';
+}
+
+// ═══════════════════════════════════════════
+// NOTES — PINNED ITEMS
+// ═══════════════════════════════════════════
+function loadPins() {
+  try { return JSON.parse(localStorage.getItem(PINNED_KEY)) || []; }
+  catch { return []; }
+}
+
+function savePins(pins) { localStorage.setItem(PINNED_KEY, JSON.stringify(pins)); }
+
+function renderPins() {
+  const pins = loadPins();
+  const list = document.getElementById('pinnedList');
+  if (pins.length === 0) {
+    list.innerHTML = '<div class="empty-pins">No pinned items yet — add one below.</div>';
+    return;
+  }
+  list.innerHTML = pins.map((p, i) => `
+    <div class="pinned-item">
+      <div class="pinned-bullet"></div>
+      <div class="pinned-text">${escHtml(p.text)}</div>
+      <div class="pinned-date">${fmtDate(p.date)}</div>
+      <button class="pinned-del" onclick="deletePin(${i})" title="Remove">×</button>
+    </div>
+  `).join('');
+}
+
+function addPin() {
+  const input = document.getElementById('pinnedInput');
+  const text = input.value.trim();
+  if (!text) return;
+  const pins = loadPins();
+  pins.unshift({ text, date: new Date().toISOString() });
+  savePins(pins);
+  input.value = '';
+  renderPins();
+  flashSaved();
+}
+
+function deletePin(i) {
+  const pins = loadPins();
+  pins.splice(i, 1);
+  savePins(pins);
+  renderPins();
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ═══════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════
+let currentTab = 'freeform';
+
+function switchTab(tab, btn) {
+  currentTab = tab;
+  document.querySelectorAll('.notes-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-freeform').style.display = tab === 'freeform' ? '' : 'none';
+  document.getElementById('tab-pinned').style.display   = tab === 'pinned'   ? '' : 'none';
+}
+
+function clearCurrentTab() {
+  if (currentTab === 'freeform') {
+    if (!confirm('Clear all free notes?')) return;
+    localStorage.removeItem(NOTES_KEY);
+    document.getElementById('notesTextarea').value = '';
+  } else {
+    if (!confirm('Clear all pinned items?')) return;
+    savePins([]);
+    renderPins();
+  }
+}
+
+function flashSaved() {
+  const ind = document.getElementById('savedIndicator');
+  ind.classList.remove('show');
+  setTimeout(() => ind.classList.add('show'), 50);
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+const savedTheme = localStorage.getItem(THEME_KEY) || 'dark';
+applyTheme(savedTheme);
+updateStats(load());
+loadNotes();
+renderPins();
+</script>
+</body>
+</html>
